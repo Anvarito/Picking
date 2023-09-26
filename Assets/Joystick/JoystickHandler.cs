@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class JoystickHandler : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
+public class JoystickHandler : MonoBehaviour
 {
+    [SerializeField] private InputController _inputController;
     [SerializeField] private Image _joystickOutter;
     [SerializeField] private Image _joystickInner;
     
@@ -13,21 +15,24 @@ public class JoystickHandler : MonoBehaviour, IDragHandler, IEndDragHandler, IPo
 
     public bool IsVisible => _joystick is null ? false : _joystick.activeInHierarchy;
 
+    private void Awake()
+    {
+        _inputController.OnDragHandle += OnDrag;
+        _inputController.OnEndDragHandle += OnEndDrag;
+        _inputController.OnPointerDownHandle += OnPointerDown;
+        _inputController.OnPointerUpHandle += OnPointerUp;
+    }
+
     public void Start()
     {
         _joystick = _joystickOutter.gameObject;
         Hide();
     }
 
-    public void StartPosition(Vector2 pos)
-    {
-        _joystickOutter.rectTransform.position = new Vector2(pos.x, pos.y);
-    }
-
     public virtual void OnDrag(PointerEventData eventData)
     {
         Vector2 pos;
-        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_joystickOutter.rectTransform, eventData.position, eventData.pressEventCamera, out pos))
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(_joystickOutter.rectTransform, eventData.position, eventData.enterEventCamera, out pos))
         {
             pos.x = (pos.x / _joystickOutter.rectTransform.sizeDelta.x);
             pos.y = (pos.y / _joystickOutter.rectTransform.sizeDelta.x);
@@ -47,7 +52,7 @@ public class JoystickHandler : MonoBehaviour, IDragHandler, IEndDragHandler, IPo
     public void OnPointerDown(PointerEventData eventData)
     {
         Show();
-        StartPosition(new Vector2(eventData.position.x, eventData.position.y));
+        _joystickOutter.rectTransform.position = eventData.position;
     }
 
     public void OnPointerUp(PointerEventData eventData)
