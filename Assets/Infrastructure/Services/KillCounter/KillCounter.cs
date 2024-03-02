@@ -1,14 +1,12 @@
 using System;
 using Infrastructure.Factory.Base;
 using Infrastructure.Factory.Compose;
-using Infrastructure.Services.Progress;
 using Infrastructure.Services.StaticData;
 
 namespace Infrastructure.Services.KillCounter
 {
     public class KillCounter : IKillCounter
     {
-        private readonly IProgressService _progressService;
         private readonly IStaticDataService _dataService;
         public Action OnEnemiesDestroyed { get; set; }
         public Action OnPlayersDestroyed { get; set; }
@@ -19,9 +17,8 @@ namespace Infrastructure.Services.KillCounter
         private readonly IEnemyFactory _enemyFactory;
         private readonly IPlayerFactory _playerFactory;
 
-        public KillCounter(IFactories factories, IProgressService progressService)
+        public KillCounter(IFactories factories )
         {
-            _progressService = progressService;
             
             _enemyFactory = factories.Single<IEnemyFactory>();
             _playerFactory = factories.Single<IPlayerFactory>();

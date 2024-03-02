@@ -13,8 +13,6 @@ public class PlayerStareter : MonoBehaviour
         PlayerView playerView = Instantiate(_playerViewPrefab);
         var playerDataModel = new PlayerDataModel(_playerMoveConfig.Speed,_playerMoveConfig.AngularSpeed);
         PlayerContoller playerContoller = new PlayerContoller(playerView, playerDataModel, _inputController);
-
-        _cameraMover.SetTarget(playerView);
     }
 
 }

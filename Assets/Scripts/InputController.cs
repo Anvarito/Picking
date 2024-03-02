@@ -1,15 +1,17 @@
 using System;
+using Infrastructure.Services.Input;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class InputController : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
+public class InputController : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler, IInputService
 {
-    public UnityAction<PointerEventData> OnDragHandle;
-    public UnityAction<PointerEventData> OnEndDragHandle;
-    public UnityAction<PointerEventData> OnPointerDownHandle;
-    public UnityAction<PointerEventData> OnPointerUpHandle;
-
+    
+    public UnityAction<PointerEventData> OnDragHandle { get;  set;}
+    public UnityAction<PointerEventData> OnEndDragHandle { get;  set;}
+    public UnityAction<PointerEventData> OnPointerDownHandle { get;  set;}
+    public UnityAction<PointerEventData> OnPointerUpHandle { get;  set;}
+    
     private bool _isStartDrag = false;
     private PointerEventData _dragEventData;
     
@@ -52,4 +54,10 @@ public class InputController : MonoBehaviour, IDragHandler, IEndDragHandler, IPo
         if(_isStartDrag)
             OnDragHandle?.Invoke(_dragEventData);
     }
+
+    public void CleanUp()
+    {
+        
+    }
+
 }

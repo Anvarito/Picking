@@ -1,4 +1,5 @@
-using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using Object = UnityEngine.Object;
@@ -7,15 +8,10 @@ namespace Infrastructure.Assets
 {
     public class AssetLoader : IAssetLoader
     {
-        private ICoroutineRunner _coroutineRunner;
-        private Coroutine _coroutine;
-        public AssetLoader(ICoroutineRunner coroutineRunner) =>
-            _coroutineRunner = coroutineRunner;
-
+        CancellationTokenSource cts = new CancellationTokenSource();
         public void CleanUp()
         {
-            if (_coroutine != null)
-                _coroutineRunner.StopCoroutine(_coroutine);
+            cts.Cancel();
         }
 
         public GameObject Instantiate(string path, Vector3 at)
@@ -29,28 +25,33 @@ namespace Infrastructure.Assets
             GameObject hudPrefab = Resources.Load<GameObject>(path);
             return Instantiate(hudPrefab);
         }
+
         public GameObject Instantiate(GameObject gameObject)
         {
             return Object.Instantiate(gameObject);
         }
+
         public GameObject Instantiate(GameObject gameObject, Vector3 at)
         {
             return Object.Instantiate(gameObject, at, Quaternion.identity);
         }
+
         public TComponent Instantiate<TComponent>(string path) where TComponent : MonoBehaviour
         {
             TComponent hudPrefab = Resources.Load<TComponent>(path);
             return Object.Instantiate<TComponent>(hudPrefab);
         }
+
         public TComponent Instantiate<TComponent>(string path, Vector3 at) where TComponent : MonoBehaviour
         {
             TComponent hudPrefab = Resources.Load<TComponent>(path);
             return Object.Instantiate<TComponent>(hudPrefab, at, Quaternion.identity);
         }
 
-        public void InstantiateAsync(string path, UnityAction<float> progress = null, UnityAction<GameObject> onComplete = null)
+        public async UniTask InstantiateAsync(string path, UnityAction<float> progress = null,
+            UnityAction<GameObject> onComplete = null)
         {
-            _coroutine = _coroutineRunner.StartCoroutine(LoadAsset(path, progress, onComplete));
+            await LoadAsset(path, progress, onComplete);
         }
 
         public ResourceRequest InstantiateAsync(string path)
@@ -59,18 +60,11 @@ namespace Infrastructure.Assets
             return asset;
         }
 
-        private IEnumerator LoadAsset(string path, UnityAction<float> progress = null, UnityAction<GameObject> onComplete = null)
+        private async UniTask LoadAsset(string path, UnityAction<float> progress = null,
+            UnityAction<GameObject> onComplete = null)
         {
-            ResourceRequest asset = Resources.LoadAsync(path);
-
-            while (!asset.isDone)
-            {
-                progress?.Invoke(asset.progress);
-                yield return null;
-            }
-
-            onComplete?.Invoke(asset.asset as GameObject);
-            yield return null;
+            var asset = await Resources.LoadAsync(path).ToUniTask(Progress.Create<float>(x => progress?.Invoke(x)));
+            onComplete?.Invoke(asset as GameObject);
         }
     }
 }

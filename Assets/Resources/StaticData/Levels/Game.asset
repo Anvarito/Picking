@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Game
   m_EditorClassIdentifier: 
   Config:
-    SceneName: Game
-    InGameName: Game
+    SceneName: Level 1
+    InGameName: Level 1
     GameTimer: 5

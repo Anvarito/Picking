@@ -4,7 +4,6 @@ using Infrastructure.Factory.Base;
 using Infrastructure.Services;
 using Infrastructure.Services.KillCounter;
 using Infrastructure.Services.Score;
-using Infrastructure.Services.Timer;
 
 namespace Infrastructure.Factory.Compose
 {
@@ -28,8 +27,6 @@ namespace Infrastructure.Factory.Compose
         public IKillCounter KillCounter { get; }
         public IScoreCounter ScoreCounter { get; }
 
-        public ITimerService TimerService { get; }
-
     }
     
     public class BattleServicesFacade : IBattleServicesFacade
@@ -38,13 +35,10 @@ namespace Infrastructure.Factory.Compose
 
         public IScoreCounter ScoreCounter { get; }
 
-        public ITimerService TimerService { get; }
-
-        public BattleServicesFacade(IKillCounter killCounter, IScoreCounter scoreCounter, ITimerService timerService)
+        public BattleServicesFacade(IKillCounter killCounter, IScoreCounter scoreCounter)
         {
             KillCounter = killCounter;
             ScoreCounter = scoreCounter;
-            TimerService = timerService;
         }
 
         public void CleanUp()

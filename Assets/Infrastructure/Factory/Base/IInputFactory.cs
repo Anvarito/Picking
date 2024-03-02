@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-using Infrastructure.Components;
-using UnityEngine;
+using Infrastructure.Services.Input;
 
 namespace Infrastructure.Factory.Base
 {
-    internal interface IInputFactory : IGameFactory
+    public interface IInputFactory : IGameFactory
     {
-        
+        public IInputService InputService { get; }
     }
 }
