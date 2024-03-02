@@ -9,53 +9,47 @@ public class PlayerCargoHolder : MonoBehaviour
     private Vector3 positionNextCargo;
     private Stack<Cargo> _cargos = new Stack<Cargo>();
     private bool _isUnloading = false;
-    private void Awake()
-    {
-        UnloadTrigger.OnUnload += UnloadCargo;
-    }
+
     private void Start()
     {
         ResetLoadPoint();
     }
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (!_isUnloading && hit.transform.TryGetComponent(out Cargo cargo))
+        if (_isUnloading)
+            return;
+
+        if (hit.transform.TryGetComponent(out Cargo cargo))
         {
             if (cargo.IsPicked)
                 return;
 
-            cargo.Pick();
-            cargo.transform.parent = cargoPoint;
-
-            cargo.RotateTo(Vector3.zero);
-            cargo.MoveTo(positionNextCargo);
-
-            _cargos.Push(cargo);
-
+            cargo.Pick(cargoPoint, positionNextCargo, Vector3.zero);
             positionNextCargo.y += cargo.Size.y * 1.5f;
+            _cargos.Push(cargo);
         }
     }
 
-    private void UnloadCargo(UnloadingArea unloadingArea)
+    public void UnloadCargoTo(UnloadingArea unloadingArea)
     {
         if (_isUnloading)
             return;
+        _isUnloading = true;
 
         StartCoroutine(UnloadCoroutine(unloadingArea));
     }
 
     private IEnumerator UnloadCoroutine(UnloadingArea unloadingArea)
     {
-        if (_cargos.TryPop(out Cargo result))
+        if (_cargos.TryPop(out Cargo cargo))
         {
-            _isUnloading = true;
-            unloadingArea.Unloading(result);
+            unloadingArea.Unloading(cargo);
             yield return new WaitForSeconds(_unloadDelay);
             StartCoroutine(UnloadCoroutine(unloadingArea));
         }
         else
         {
-            _isUnloading = false;
             ResetLoadPoint();
         }
     }
@@ -63,5 +57,6 @@ public class PlayerCargoHolder : MonoBehaviour
     private void ResetLoadPoint()
     {
         positionNextCargo = Vector3.zero;
+        _isUnloading = false;
     }
 }

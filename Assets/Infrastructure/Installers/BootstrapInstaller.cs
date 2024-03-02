@@ -21,12 +21,13 @@ namespace Infrastructure.Installers
             AssetLoader = new AssetLoader();
             Container
                 .Bind<AssetLoader>()
+                .FromInstance(AssetLoader)
                 .AsSingle();
         }
 
         private void BindInputService()
         {
-           Container.Bind<InputController>().FromComponentInNewPrefab(CanvasPrefab).AsSingle();
+           Container.Bind<IInputService>().To<InputController>().FromComponentInNewPrefab(CanvasPrefab).AsSingle();
         }
     }
 }

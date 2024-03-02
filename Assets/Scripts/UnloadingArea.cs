@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class UnloadingArea : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class UnloadingArea : MonoBehaviour
     [SerializeField] private int _zMaxCount;
     [SerializeField] private float _sizeOffset = 1.5f;
 
-    [SerializeField] private Transform _unloadPoint;
+    [SerializeField] private Transform _unloadParent;
 
     private Vector3 positionNextUnload;
 
@@ -27,7 +28,6 @@ public class UnloadingArea : MonoBehaviour
 
     public void Unloading(Cargo cargo)
     {
-        cargo.transform.parent = _unloadPoint;
 
         if (_currentZindex >= _zMaxCount)
         {
@@ -47,8 +47,7 @@ public class UnloadingArea : MonoBehaviour
 
         _currentZindex += 1;
 
-        cargo.MoveTo(positionNextUnload);
-        cargo.RotateTo(Vector3.zero);
+        cargo.Place(_unloadParent ,positionNextUnload, Vector3.zero);
 
         OnEncrease?.Invoke();
     }

@@ -7,9 +7,9 @@ public class CameraMover : MonoBehaviour
     private Transform target;
 
     [Inject]
-    private void Construct(PlayerView playerView)
+    private void Construct(IPlayerView playerView)
     {
-        target = playerView.transform;
+        target = playerView.Transform;
     }
     void Update()
     {

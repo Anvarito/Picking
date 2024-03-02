@@ -1,3 +1,4 @@
+using Infrastructure.Services.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -6,24 +7,24 @@ public class PlayerContoller
     private IPlayerDataModel _playerDataModel;
     private IPlayerView _playerView;
 
-    private InputController _inputController;
+    private IInputService _inputServise;
 
     private Vector3 _startMousePosition;
     private Vector3 _newMousePosition;
     private Vector3 _movementDirection;
     private float _normalizedMagnitude;
 
-    public PlayerContoller(IPlayerView playerView, IPlayerDataModel playerDataModel, InputController inputController)
+    public PlayerContoller(IPlayerView playerView, IPlayerDataModel playerDataModel, IInputService inputService)
     {
         _playerView = playerView;
         _playerDataModel = playerDataModel;
 
-        _inputController = inputController;
+        _inputServise = inputService;
 
-        _inputController.OnDragHandle += OnDrag;
-        _inputController.OnEndDragHandle += OnEndDrag;
-        _inputController.OnPointerDownHandle += OnPointerDown;
-        _inputController.OnPointerUpHandle += OnPointerUp;
+        _inputServise.OnDragHandle += OnDrag;
+        _inputServise.OnEndDragHandle += OnEndDrag;
+        _inputServise.OnPointerDownHandle += OnPointerDown;
+        _inputServise.OnPointerUpHandle += OnPointerUp;
         
         _playerView.SetAnimationSpeed(0);
     }
