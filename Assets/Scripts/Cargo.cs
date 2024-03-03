@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.Serialization;
+using UnityEngine.Events;
 
 public class Cargo : MonoBehaviour
 {
@@ -17,28 +15,32 @@ public class Cargo : MonoBehaviour
         Size = _collider.bounds.size;
     }
 
-    public void Pick(Transform newParent, Vector3 moveEndPos, Vector3 RotateEndPos)
+    public void Pick(Transform newParent, Vector3 moveEndPos, Vector3 RotateEndPos, UnityAction onComplete)
     {
         if (IsPicked)
             return;
         IsPicked = true;
 
-        MoveToNewPlace(newParent, moveEndPos, RotateEndPos);
+        MoveToNewPlace(newParent, moveEndPos, RotateEndPos, onComplete);
     }
-    public void Place(Transform newParent, Vector3 moveEndPos, Vector3 RotateEndPos)
+    public void Place(Transform newParent, Vector3 moveEndPos, Vector3 RotateEndPos, UnityAction onComplete)
     {
-        MoveToNewPlace(newParent, moveEndPos, RotateEndPos);
+        MoveToNewPlace(newParent, moveEndPos, RotateEndPos, onComplete);
     }
-    private void MoveToNewPlace(Transform newParent, Vector3 moveEndPos, Vector3 RotateEndPos)
+    private void MoveToNewPlace(Transform newParent, Vector3 moveEndPos, Vector3 RotateEndPos, UnityAction onComplete)
     {
         transform.parent = newParent;
-        MoveTo(moveEndPos);
+        MoveTo(moveEndPos, onComplete);
         RotateTo(RotateEndPos);
     }
-    private void MoveTo(Vector3 end)
+    private void MoveTo(Vector3 end, UnityAction onComplete)
     {
         _collider.enabled = false;
-        transform.DOLocalMove(end, 0.2f).SetEase(Ease.Linear).onComplete = () => { _collider.enabled = true; };
+        transform.DOLocalMove(end, 0.2f).SetEase(Ease.Linear).onComplete = () => 
+            { 
+                _collider.enabled = true; 
+                onComplete?.Invoke(); 
+            };
     }
 
     private void RotateTo(Vector3 end)

@@ -19,7 +19,7 @@ public class UnloadingArea : MonoBehaviour
     private int _currentYindex = 0;
     private int _currentZindex = 0;
 
-    public UnityEvent OnEncrease;
+    public UnityAction OnEncrease;
 
     private void Awake()
     {
@@ -47,8 +47,6 @@ public class UnloadingArea : MonoBehaviour
 
         _currentZindex += 1;
 
-        cargo.Place(_unloadParent ,positionNextUnload, Vector3.zero);
-
-        OnEncrease?.Invoke();
+        cargo.Place(_unloadParent ,positionNextUnload, Vector3.zero, OnEncrease);
     }
 }

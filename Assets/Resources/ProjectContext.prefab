@@ -74,4 +74,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8697c522c174a11bb120cf7f40bedc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CanvasPrefab: {fileID: 486742878726886984, guid: 8d2b5eea250bbcd4ca41640f22a31a81, type: 3}
+  CanvasPrefab: {fileID: 486742878726886984, guid: 2aa81713d79d2324f9f4653920bfb741, type: 3}

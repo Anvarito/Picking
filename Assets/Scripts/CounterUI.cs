@@ -1,15 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Zenject;
 
 public class CounterUI : MonoBehaviour
 {
     [SerializeField] private Text text;
+    private UnloadingArea _unloadingArea;
     private Tween tween;
     private int _count = 0;
-    public void Encrease()
+
+    [Inject]
+    private void Construct(UnloadingArea unloadingArea)
+    {
+        _unloadingArea = unloadingArea;
+        _unloadingArea.OnEncrease += Encrease;
+    }
+    
+    private void Encrease()
     {
         _count += 1;
         text.text = _count.ToString();

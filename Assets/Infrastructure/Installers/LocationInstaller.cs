@@ -9,10 +9,17 @@ namespace Infrastructure.Installers
         public Transform SpawnPoint;
         public GameObject HeroPrefab;
         public PlayerMoveConfig PlayerMoveConfig;
+        public GameObject PointsCanvas;
 
         public override void InstallBindings()
         {
             BindPlayer();
+            BindPointCanvas();
+        }
+
+        private void BindPointCanvas()
+        {
+            Container.InstantiatePrefabForComponent<CounterUI>(PointsCanvas);
         }
 
         private void BindPlayer()

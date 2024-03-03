@@ -25,7 +25,7 @@ public class PlayerCargoHolder : MonoBehaviour
             if (cargo.IsPicked)
                 return;
 
-            cargo.Pick(cargoPoint, positionNextCargo, Vector3.zero);
+            cargo.Pick(cargoPoint, positionNextCargo, Vector3.zero, () => {});
             positionNextCargo.y += cargo.Size.y * 1.5f;
             _cargos.Push(cargo);
         }
