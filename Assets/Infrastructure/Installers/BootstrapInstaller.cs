@@ -8,8 +8,7 @@ namespace Infrastructure.Installers
 {
     public class BootstrapInstaller : MonoInstaller
     {
-        public GameObject CanvasPrefab;
-        private AssetLoader AssetLoader;
+        private AssetLoader _assetLoader;
         public override void InstallBindings()
         {
             BindAssetLoader();
@@ -18,16 +17,16 @@ namespace Infrastructure.Installers
 
         private void BindAssetLoader()
         {
-            AssetLoader = new AssetLoader();
+            _assetLoader = new AssetLoader();
             Container
                 .Bind<AssetLoader>()
-                .FromInstance(AssetLoader)
+                .FromInstance(_assetLoader)
                 .AsSingle();
         }
 
         private void BindInputService()
         {
-           Container.Bind<IInputService>().To<InputController>().FromComponentInNewPrefab(CanvasPrefab).AsSingle();
+           Container.Bind<IInputService>().To<InputController>().FromComponentInNewPrefabResource(AssetPaths.Input).AsSingle();
         }
     }
 }
