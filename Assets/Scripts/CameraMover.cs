@@ -1,18 +1,16 @@
 using UnityEngine;
-using Zenject;
 
 public class CameraMover : MonoBehaviour
 {
     [SerializeField] private Vector3 _offset;
-    private Transform target;
+    private IPlayerView _playerView;
 
-    [Inject]
-    private void Construct(IPlayerView playerView)
+    public void WarmUp(IPlayerView playerView)
     {
-        target = playerView.Transform;
+        _playerView = playerView;
     }
     void Update()
     {
-        transform.position = target.position + _offset;
+        transform.position = _playerView.Transform.position + _offset;
     }
 }

@@ -1,28 +1,28 @@
-﻿using System;
+﻿using Infrastructure.Services.Input;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class JoystickHandler : MonoBehaviour
 {
-    [SerializeField] private InputController _inputController;
     [SerializeField] private Image _joystickOutter;
     [SerializeField] private Image _joystickInner;
     
+    private IInputService _mouseInputController;
     private GameObject _joystick;
     private Vector2 _inputVector;
 
     public bool IsVisible => _joystick is null ? false : _joystick.activeInHierarchy;
 
-    private void Awake()
+    public void WarmUp(IInputService inputService)
     {
-        _inputController.OnDragHandle += OnDrag;
-        _inputController.OnEndDragHandle += OnEndDrag;
-        _inputController.OnPointerDownHandle += OnPointerDown;
-        _inputController.OnPointerUpHandle += OnPointerUp;
+        _mouseInputController = inputService;
+        _mouseInputController.OnDragHandle += OnDrag;
+        _mouseInputController.OnEndDragHandle += OnEndDrag;
+        _mouseInputController.OnPointerDownHandle += OnPointerDown;
+        _mouseInputController.OnPointerUpHandle += OnPointerUp;
     }
-
+  
     public void Start()
     {
         _joystick = _joystickOutter.gameObject;

@@ -14,57 +14,80 @@ namespace Infrastructure.Assets
             cts.Cancel();
         }
 
-        public GameObject Instantiate(string path, Vector3 at)
+        // public GameObject Load(string path, Vector3 at)
+        // {
+        //     GameObject playerPrefab = Resources.Load<GameObject>(path);
+        //     return Load(playerPrefab, at);
+        // }
+        //
+        // public GameObject Load(string path)
+        // {
+        //     GameObject hudPrefab = Resources.Load<GameObject>(path);
+        //     return Load(hudPrefab);
+        // }
+        //
+        // public GameObject Load(GameObject gameObject)
+        // {
+        //     return Object.Load(gameObject);
+        // }
+        //
+        //
+        //
+        // public TComponent Load<TComponent>(string path) where TComponent : MonoBehaviour
+        // {
+        //     TComponent hudPrefab = Resources.Load<TComponent>(path);
+        //     return Object.Load<TComponent>(hudPrefab);
+        // }
+        //
+        // public TComponent Load<TComponent>(string path, Vector3 at) where TComponent : MonoBehaviour
+        // {
+        //     TComponent hudPrefab = Resources.Load<TComponent>(path);
+        //     return Object.Load<TComponent>(hudPrefab, at, Quaternion.identity);
+        // }
+        //
+        //
+        //
+        // public ResourceRequest InstantiateAsync(string path)
+        // {
+        //     ResourceRequest asset = Resources.LoadAsync(path);
+        //     return asset;
+        // }
+        public GameObject Load(string path)
         {
-            GameObject playerPrefab = Resources.Load<GameObject>(path);
-            return Instantiate(playerPrefab, at);
+            var go = Resources.Load(path);
+            return go as GameObject;
         }
-
-        public GameObject Instantiate(string path)
-        {
-            GameObject hudPrefab = Resources.Load<GameObject>(path);
-            return Instantiate(hudPrefab);
-        }
-
         public GameObject Instantiate(GameObject gameObject)
         {
             return Object.Instantiate(gameObject);
         }
-
-        public GameObject Instantiate(GameObject gameObject, Vector3 at)
+        public T Instantiate<T>(string path) where T : MonoBehaviour
         {
-            return Object.Instantiate(gameObject, at, Quaternion.identity);
+            T hudPrefab = Resources.Load<T>(path);
+            return Object.Instantiate(hudPrefab);
         }
-
-        public TComponent Instantiate<TComponent>(string path) where TComponent : MonoBehaviour
-        {
-            TComponent hudPrefab = Resources.Load<TComponent>(path);
-            return Object.Instantiate<TComponent>(hudPrefab);
-        }
-
-        public TComponent Instantiate<TComponent>(string path, Vector3 at) where TComponent : MonoBehaviour
-        {
-            TComponent hudPrefab = Resources.Load<TComponent>(path);
-            return Object.Instantiate<TComponent>(hudPrefab, at, Quaternion.identity);
-        }
-
-        public async UniTask InstantiateAsync(string path, UnityAction<float> progress = null,
-            UnityAction<GameObject> onComplete = null)
-        {
-            await LoadAsset(path, progress, onComplete);
-        }
-
-        public ResourceRequest InstantiateAsync(string path)
-        {
-            ResourceRequest asset = Resources.LoadAsync(path);
-            return asset;
-        }
-
-        private async UniTask LoadAsset(string path, UnityAction<float> progress = null,
+        public async UniTask LoadAsset(string path, UnityAction<float> progress = null,
             UnityAction<GameObject> onComplete = null)
         {
             var asset = await Resources.LoadAsync(path).ToUniTask(Progress.Create<float>(x => progress?.Invoke(x)));
             onComplete?.Invoke(asset as GameObject);
+        }
+
+        public async UniTask<T> LoadAsset<T>(string path) where T : MonoBehaviour
+        {
+            var asset= await Resources.LoadAsync<T>(path);
+            return asset as T;
+        }
+        public async UniTask<T> LoadAndInstantiateAsync<T>(string path) where T : MonoBehaviour
+        {
+            var asset= await Resources.LoadAsync<T>(path);
+            return Object.Instantiate(asset as T);
+        }
+
+        public T LoadAndInstantiate<T>(string path) where T : MonoBehaviour
+        {
+            var asset =  Resources.Load<T>(path);
+            return Object.Instantiate(asset);
         }
     }
 }

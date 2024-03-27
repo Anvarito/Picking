@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using Infrastructure.Services.StaticData.Level;
 
-namespace Infrastructure.Services.StaticData
+namespace Infrastructure.Services
 {
     public interface IStaticDataService : IService
     {
         void LoadAllStaticData();
         LevelConfig ForLevel(string id);
-        //GamemodeConfig ForMode(GamemodeId id);
+        PlayerMoveConfig ForPlayer{ get; }
         Dictionary<string, LevelConfig> Levels { get; }
-       // List<SpawnPointConfig> ForLevelAndMode(LevelId id1, GamemodeId id2);
     }
 }

@@ -1,6 +1,7 @@
 using Infrastructure.Services.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 public class PlayerContoller
 {
@@ -14,7 +15,8 @@ public class PlayerContoller
     private Vector3 _movementDirection;
     private float _normalizedMagnitude;
 
-    public PlayerContoller(IPlayerView playerView, IPlayerDataModel playerDataModel, IInputService inputService)
+    [Inject]
+    private void Construct(IPlayerView playerView, IPlayerDataModel playerDataModel, IInputService inputService)
     {
         _playerView = playerView;
         _playerDataModel = playerDataModel;
@@ -28,7 +30,6 @@ public class PlayerContoller
         
         _playerView.SetAnimationSpeed(0);
     }
-
     private void OnPointerUp(PointerEventData direction)
     {
         _movementDirection = Vector3.zero;

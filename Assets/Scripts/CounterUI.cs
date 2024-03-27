@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
@@ -6,17 +8,28 @@ using Zenject;
 public class CounterUI : MonoBehaviour
 {
     [SerializeField] private Text text;
-    private UnloadingArea _unloadingArea;
     private Tween tween;
     private int _count = 0;
+    private List<UnloadingArea> _unloadingAreas;
 
-    [Inject]
-    private void Construct(UnloadingArea unloadingArea)
+
+    public void WarmUp(List<UnloadingArea> unloadingAreas)
     {
-        _unloadingArea = unloadingArea;
-        _unloadingArea.OnEncrease += Encrease;
+        _unloadingAreas = unloadingAreas;
+        foreach (var area in _unloadingAreas)
+        {
+            area.OnEncrease += Encrease;
+        }
     }
-    
+
+    private void OnDestroy()
+    {
+        foreach (var area in _unloadingAreas)
+        {
+            area.OnEncrease -= Encrease;
+        }
+    }
+
     private void Encrease()
     {
         _count += 1;

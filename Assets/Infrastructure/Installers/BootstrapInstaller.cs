@@ -1,32 +1,40 @@
 using Infrastructure.Assets;
+using Infrastructure.Factories;
+using Infrastructure.SceneManagement;
 using Infrastructure.Services.Input;
-using UnityEngine;
-using UnityEngine.Serialization;
+using Infrastructure.Services.Logging;
+using Infrastructure.Services.PersistentData;
+using Infrastructure.Services.StaticData;
+using Infrastructure.States;
 using Zenject;
 
 namespace Infrastructure.Installers
 {
     public class BootstrapInstaller : MonoInstaller
     {
-        private AssetLoader _assetLoader;
         public override void InstallBindings()
         {
-            BindAssetLoader();
-            BindInputService();
+            Container.Bind<SceneLoader>().AsSingle();
+            
+            BindServices();
+            BindFactories();
         }
 
-        private void BindAssetLoader()
+        private void BindServices()
         {
-            _assetLoader = new AssetLoader();
-            Container
-                .Bind<AssetLoader>()
-                .FromInstance(_assetLoader)
-                .AsSingle();
+            Container.Bind<ILoggingService>().To<LoggingService>().AsSingle().NonLazy();
+            Container.Bind<IAssetLoader>().To<AssetLoader>().AsSingle().NonLazy();
+            //Container.Bind<IInputService>().To<InputService>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<StaticDataService>().AsSingle().NonLazy(); // remote, initializable
+            Container.BindInterfacesAndSelfTo<PersistentDataService>().AsSingle().NonLazy(); // possible remote, initializable
         }
 
-        private void BindInputService()
+        private void BindFactories()
         {
-           Container.Bind<IInputService>().To<InputController>().FromComponentInNewPrefabResource(AssetPaths.Input).AsSingle();
+            Container.BindInterfacesAndSelfTo<StateFactory>().AsSingle();
+            Container.Bind<IHeroFactory>().To<HeroFactory>().AsSingle();
+            Container.Bind<IEnemyFactory>().To<EnemyFactory>().AsSingle();
+            Container.Bind<IUIFactory>().To<UIFactory>().AsSingle();
         }
     }
 }

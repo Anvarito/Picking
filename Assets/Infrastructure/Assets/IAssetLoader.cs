@@ -7,14 +7,16 @@ namespace Infrastructure.Assets
 {
     public interface IAssetLoader : IService
     {
-        GameObject Instantiate(string path, Vector3 at);
-        GameObject Instantiate(string path);
-        GameObject Instantiate(GameObject gameObject);
-        GameObject Instantiate(GameObject gameObject, Vector3 at);
-        UniTask InstantiateAsync(string path, UnityAction<float> progress = null,
+        public GameObject Load(string path);
+        
+        public GameObject Instantiate(GameObject gameObject);
+        
+        public T Instantiate<T>(string path) where T : MonoBehaviour;
+        public UniTask<T> LoadAsset<T>(string path) where T : MonoBehaviour;
+        UniTask LoadAsset(string path, UnityAction<float> progress = null,
             UnityAction<GameObject> onComplete = null);
-        public ResourceRequest InstantiateAsync(string path);
-        TComponent Instantiate<TComponent>(string path) where TComponent : MonoBehaviour;
-        TComponent Instantiate<TComponent>(string path, Vector3 at) where TComponent : MonoBehaviour;
+
+        UniTask<T> LoadAndInstantiateAsync<T>(string path) where T : MonoBehaviour;
+        T LoadAndInstantiate<T>(string path) where T : MonoBehaviour;
     }
 }
