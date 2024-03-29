@@ -4,6 +4,7 @@ using Data;
 using Infrastructure.Factories;
 using Infrastructure.Factories.Interfaces;
 using Infrastructure.SceneManagement;
+using Infrastructure.Services.PointGoal;
 using Infrastructure.Services.StaticData.Level;
 using Zenject;
 
@@ -18,6 +19,7 @@ namespace Infrastructure.States
 
         private LevelConfig _pendingStageStaticData;
         private ICargoFactory _cargoFactory;
+        private IPointGoalService _pointGoalService;
 
         //private StageProgressData _stageProgressData;
 
@@ -25,8 +27,10 @@ namespace Infrastructure.States
             SceneLoader sceneLoader,
             IUIFactory uiFactory,
             IHeroFactory heroFactory,
-            ICargoFactory cargoFactory)
+            ICargoFactory cargoFactory,
+            IPointGoalService pointGoalService)
         {
+            _pointGoalService = pointGoalService;
             _cargoFactory = cargoFactory;
             _stateMachine = gameStateMachine;
             _sceneLoader = sceneLoader;
@@ -48,10 +52,16 @@ namespace Infrastructure.States
 
         private async void OnLoaded()
         {
+            InitPointGoal();
             await InitCargo();
             await InitUI();
             await InitHero();
             _stateMachine.Enter<GameLoopState>();
+        }
+
+        private void InitPointGoal()
+        {
+            _pointGoalService.WarmUp(_pendingStageStaticData);
         }
 
         private async Task InitCargo()

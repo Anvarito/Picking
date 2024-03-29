@@ -10,6 +10,7 @@ namespace Infrastructure.Installers
             Container.Bind<BootstrapState>().AsSingle().NonLazy();
             Container.Bind<LoadLevelState>().AsSingle().NonLazy();
             Container.Bind<GameLoopState>().AsSingle().NonLazy();
+            Container.Bind<VictoryState>().AsSingle().NonLazy();
             
             Container.BindInterfacesAndSelfTo<GameStateMachine>().AsSingle(); //GameStateMachine entry point is Initialize()
         }

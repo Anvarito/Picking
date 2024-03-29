@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Object = UnityEngine.Object;
 
-namespace Infrastructure.Assets
+namespace Infrastructure.Services.Assets
 {
     public class AssetLoader : IAssetLoader
     {

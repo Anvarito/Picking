@@ -1,5 +1,7 @@
 ﻿using Infrastructure.Factories;
 using Infrastructure.Factories.Interfaces;
+using Infrastructure.Services.PointGoal;
+using UnityEngine;
 
 namespace Infrastructure.States
 {
@@ -10,16 +12,20 @@ namespace Infrastructure.States
         private readonly IHeroFactory _heroFactory;
 
         private ICargoFactory _cargoFactory;
+
+        private IPointGoalService _pointGoalService;
         //private readonly ILevelProgressService _levelProgressService;
 
         public GameLoopState(
             GameStateMachine gameStateMachine,
             IHeroFactory heroFactory, 
             IEnemyFactory enemyFactory,
-            ICargoFactory cargoFactory
+            ICargoFactory cargoFactory,
+            IPointGoalService pointGoalService
             //ILevelProgressService levelProgressService)
             )
         {
+            _pointGoalService = pointGoalService;
             _cargoFactory = cargoFactory;
             _stateMachine = gameStateMachine;
             _heroFactory = heroFactory;
@@ -30,12 +36,20 @@ namespace Infrastructure.States
         public void Enter()
         {
             //_levelProgressService.LevelProgressWatcher.RunLevel();
+            _pointGoalService.OnPointsGoal += PointGoal;
             _cargoFactory.SpawnCargo();
+        }
+
+        private void PointGoal()
+        {
+            Debug.Log("POINT GOAL");
+            _stateMachine.Enter<VictoryState>();
         }
 
         public void Exit()
         {
             // release enemies' assets there instead on exit from LLS coz they can respawn by timer
+            _pointGoalService.OnPointsGoal -= PointGoal;
             _cargoFactory.CleanUp();
             _enemyFactory.CleanUp();
             _heroFactory.CleanUp();

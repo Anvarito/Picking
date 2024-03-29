@@ -27,7 +27,8 @@ namespace Infrastructure.States
                 [typeof(BootstrapState)]    = _stateFactory.CreateState<BootstrapState>(),
                 //[typeof(LoadProgressState)] = _stateFactory.CreateState<LoadProgressState>(),
                 [typeof(LoadLevelState)]    = _stateFactory.CreateState<LoadLevelState>(),
-                [typeof(GameLoopState)]     = _stateFactory.CreateState<GameLoopState>()
+                [typeof(GameLoopState)]     = _stateFactory.CreateState<GameLoopState>(),
+                [typeof(VictoryState)]      = _stateFactory.CreateState<VictoryState>()
             };
             
             Enter<BootstrapState>();

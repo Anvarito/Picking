@@ -1,9 +1,8 @@
 using Cysharp.Threading.Tasks;
-using Infrastructure.Services;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Infrastructure.Assets
+namespace Infrastructure.Services.Assets
 {
     public interface IAssetLoader : IService
     {

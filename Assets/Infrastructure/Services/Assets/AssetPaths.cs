@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace Infrastructure.Assets
+namespace Infrastructure.Services.Assets
 {
     public class AssetPaths
     {

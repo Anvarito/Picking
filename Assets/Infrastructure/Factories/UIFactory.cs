@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Infrastructure.Assets;
 using Infrastructure.Services;
+using Infrastructure.Services.Assets;
 using Infrastructure.Services.Input;
 using Infrastructure.Services.StaticData.Level;
 using UnityEngine;

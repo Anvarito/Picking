@@ -1,10 +1,11 @@
-using Infrastructure.Assets;
 using Infrastructure.Factories;
 using Infrastructure.Factories.Interfaces;
 using Infrastructure.SceneManagement;
+using Infrastructure.Services.Assets;
 using Infrastructure.Services.Input;
 using Infrastructure.Services.Logging;
 using Infrastructure.Services.PersistentData;
+using Infrastructure.Services.PointGoal;
 using Infrastructure.Services.StaticData;
 using Infrastructure.States;
 using Zenject;
@@ -28,6 +29,7 @@ namespace Infrastructure.Installers
             //Container.Bind<IInputService>().To<InputService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<StaticDataService>().AsSingle().NonLazy(); // remote, initializable
             Container.BindInterfacesAndSelfTo<PersistentDataService>().AsSingle().NonLazy(); // possible remote, initializable
+            Container.BindInterfacesAndSelfTo<PointGoalService>().AsSingle().NonLazy(); // possible remote, initializable
         }
 
         private void BindFactories()

@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Infrastructure.Assets;
 using Infrastructure.Services;
+using Infrastructure.Services.Assets;
 using Infrastructure.Services.StaticData.Level;
 using Unity.VisualScripting;
 using UnityEngine;

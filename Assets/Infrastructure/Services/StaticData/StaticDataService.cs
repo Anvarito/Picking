@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Infrastructure.Assets;
+using Infrastructure.Services.Assets;
 using Infrastructure.Services.StaticData.Level;
 using UnityEngine;
 
