@@ -5,5 +5,6 @@ namespace Infrastructure.Factories.Interfaces
     public interface ICargoFactory : IFactory
     {
         UniTask SpawnCargo();
+        void StopSpawnCargo();
     }
 }

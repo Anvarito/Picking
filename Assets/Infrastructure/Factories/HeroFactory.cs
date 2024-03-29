@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using Infrastructure.Assets;
 using Infrastructure.Services;
+using Infrastructure.Services.StaticData.Level;
 using JetBrains.Annotations;
 using UnityEngine;
 using Zenject;
@@ -24,7 +25,7 @@ namespace Infrastructure.Factories
             _staticDataService = staticDataService;
         }
 
-        public async UniTask WarmUp()
+        public async UniTask WarmUp(LevelConfig pendingStageStaticData)
         {
             var playerView = InstantiatePlayer();
             InstantiateCamera(playerView);

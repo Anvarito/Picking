@@ -17,7 +17,7 @@ namespace Infrastructure.States
         public void Enter()
         {
             _stateMachine.Enter<LoadLevelState, LevelConfig>(
-                _staticDataService.ForLevel(SceneNameConstants.GameSceneName));
+                _staticDataService.ForLevel(SceneNameConstants.SceneName));
         }
 
         public void Exit()

@@ -1,45 +1,59 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Infrastructure.Assets;
 using Infrastructure.Factories.Interfaces;
+using Infrastructure.Services.StaticData.Level;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Infrastructure.Factories
 {
     public class CargoFactory : ICargoFactory
     {
-        private AssetLoader _assetLoader;
+        private IAssetLoader _assetLoader;
         private Cargo _cargoPrefab;
         private float _spawnDelay;
-        public CargoFactory(AssetLoader assetLoader)
+        private List<SpawnCargoArea> _spawnCargoAreas = new List<SpawnCargoArea>();
+        private CancellationTokenSource _cancellationTokenSource;
+        private LevelConfig _levelConfig;
+
+        public CargoFactory(IAssetLoader assetLoader)
         {
             _assetLoader = assetLoader;
+            _cancellationTokenSource = new CancellationTokenSource();
         }
-        public async UniTask WarmUp()
+
+        public async UniTask WarmUp(LevelConfig pendingStageStaticData)
         {
-           await UniTask.Yield();
-           _cargoPrefab = await _assetLoader.LoadAsset<Cargo>(AssetPaths.Cargo);
+            await UniTask.Yield();
+            _levelConfig = pendingStageStaticData;
+            _spawnCargoAreas = Object.FindObjectsOfType<SpawnCargoArea>().ToList();
+            _cargoPrefab = await _assetLoader.LoadAsset<Cargo>(AssetPaths.Cargo);
         }
+
         public async UniTask SpawnCargo()
         {
-            // UniTask.WaitForSeconds(_spawnDelay);
-            // var cargo = Object.Instantiate(_cargoPrefab, transform);
-            // cargo.transform.position = GetRandomSpawnPoint();
-            // cargo.transform.rotation = Quaternion.Euler(0,Random.rotation.eulerAngles.y,0);
+            foreach (var area in _spawnCargoAreas)
+            {
+                await UniTask.WaitForSeconds(_levelConfig.SpawnDelay,false,PlayerLoopTiming.Update, _cancellationTokenSource.Token);
+                var cargo = Object.Instantiate(_cargoPrefab, area.transform);
+                cargo.transform.position = area.GetSpawnPoint();
+                cargo.transform.rotation = Quaternion.Euler(0, Random.rotation.eulerAngles.y, 0);
+            }
+
             await SpawnCargo();
         }
-        // private Vector3 GetRandomSpawnPoint()
-        // {
-        //     Bounds bounds = _collider.bounds;
-        //
-        //     float spawnX = Random.Range(bounds.min.x, bounds.max.x);
-        //     float spawnZ = Random.Range(bounds.min.z, bounds.max.z);
-        //
-        //     Vector3 spawnPoint = new Vector3(spawnX, 0, spawnZ);
-        //     return spawnPoint;
-        // }
+
+        public void StopSpawnCargo()
+        {
+            _cancellationTokenSource.Cancel();
+        }
+
         public void CleanUp()
         {
+            _spawnCargoAreas = null;
+            _cargoPrefab = null;
         }
     }
 }

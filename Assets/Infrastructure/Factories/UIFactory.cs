@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Infrastructure.Assets;
 using Infrastructure.Services;
 using Infrastructure.Services.Input;
+using Infrastructure.Services.StaticData.Level;
 using UnityEngine;
 using Zenject;
 
@@ -28,7 +29,7 @@ namespace Infrastructure.Factories
             _staticDataService = staticDataService;
         }
 
-        public async UniTask WarmUp()
+        public async UniTask WarmUp(LevelConfig pendingStageStaticData)
         {
             await _assetLoader.LoadAsset(AssetPaths.InputCanvas, null, OnLoadInputCanvas);
             CreatePointsCanvas();

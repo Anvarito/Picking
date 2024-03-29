@@ -1,5 +1,6 @@
 using Infrastructure.Assets;
 using Infrastructure.Factories;
+using Infrastructure.Factories.Interfaces;
 using Infrastructure.SceneManagement;
 using Infrastructure.Services.Input;
 using Infrastructure.Services.Logging;
@@ -35,6 +36,7 @@ namespace Infrastructure.Installers
             Container.Bind<IHeroFactory>().To<HeroFactory>().AsSingle();
             Container.Bind<IEnemyFactory>().To<EnemyFactory>().AsSingle();
             Container.Bind<IUIFactory>().To<UIFactory>().AsSingle();
+            Container.Bind<ICargoFactory>().To<CargoFactory>().AsSingle();
         }
     }
 }

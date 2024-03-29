@@ -2,6 +2,7 @@
 using UnityEngine;
 using Data;
 using Infrastructure.Factories;
+using Infrastructure.Factories.Interfaces;
 using Infrastructure.SceneManagement;
 using Infrastructure.Services.StaticData.Level;
 using Zenject;
@@ -16,14 +17,17 @@ namespace Infrastructure.States
         private readonly IHeroFactory _heroFactory;
 
         private LevelConfig _pendingStageStaticData;
+        private ICargoFactory _cargoFactory;
 
         //private StageProgressData _stageProgressData;
 
         public LoadLevelState(GameStateMachine gameStateMachine,
             SceneLoader sceneLoader,
             IUIFactory uiFactory,
-            IHeroFactory heroFactory)
+            IHeroFactory heroFactory,
+            ICargoFactory cargoFactory)
         {
+            _cargoFactory = cargoFactory;
             _stateMachine = gameStateMachine;
             _sceneLoader = sceneLoader;
             _uiFactory = uiFactory;
@@ -34,7 +38,7 @@ namespace Infrastructure.States
         {
             _pendingStageStaticData = stageStaticData;
             //_stageProgressData = new StageProgressData();
-            await _sceneLoader.Load(SceneNameConstants.GameSceneName, OnLoaded);
+            await _sceneLoader.Load(SceneNameConstants.SceneName, OnLoaded);
         }
 
         public void Exit()
@@ -44,19 +48,24 @@ namespace Infrastructure.States
 
         private async void OnLoaded()
         {
+            await InitCargo();
             await InitUI();
             await InitHero();
-            
             _stateMachine.Enter<GameLoopState>();
+        }
+
+        private async Task InitCargo()
+        {
+            await _cargoFactory.WarmUp(_pendingStageStaticData);
         }
 
         private async Task InitHero()
         {
-            await _heroFactory.WarmUp();
+            await _heroFactory.WarmUp(_pendingStageStaticData);
         }
         private async Task InitUI()
         {
-            await _uiFactory.WarmUp();
+            await _uiFactory.WarmUp(_pendingStageStaticData);
             // await _uiFactory
             //     .CreateHud()
             //     .ContinueWith(

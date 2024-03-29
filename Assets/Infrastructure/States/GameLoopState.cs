@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Factories;
+using Infrastructure.Factories.Interfaces;
 
 namespace Infrastructure.States
 {
@@ -7,15 +8,19 @@ namespace Infrastructure.States
         private readonly GameStateMachine _stateMachine;
         private readonly IEnemyFactory _enemyFactory;
         private readonly IHeroFactory _heroFactory;
+
+        private ICargoFactory _cargoFactory;
         //private readonly ILevelProgressService _levelProgressService;
 
         public GameLoopState(
             GameStateMachine gameStateMachine,
             IHeroFactory heroFactory, 
-            IEnemyFactory enemyFactory
+            IEnemyFactory enemyFactory,
+            ICargoFactory cargoFactory
             //ILevelProgressService levelProgressService)
             )
         {
+            _cargoFactory = cargoFactory;
             _stateMachine = gameStateMachine;
             _heroFactory = heroFactory;
             _enemyFactory = enemyFactory;
@@ -25,11 +30,13 @@ namespace Infrastructure.States
         public void Enter()
         {
             //_levelProgressService.LevelProgressWatcher.RunLevel();
+            _cargoFactory.SpawnCargo();
         }
 
         public void Exit()
         {
             // release enemies' assets there instead on exit from LLS coz they can respawn by timer
+            _cargoFactory.CleanUp();
             _enemyFactory.CleanUp();
             _heroFactory.CleanUp();
         }
