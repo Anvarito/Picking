@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,6 @@ public class PlayerCargoHolder : MonoBehaviour
     private Vector3 positionNextCargo;
     private Stack<Cargo> _cargos = new Stack<Cargo>();
     private bool _isUnloading = false;
-
     private void Start()
     {
         ResetLoadPoint();
@@ -53,7 +53,6 @@ public class PlayerCargoHolder : MonoBehaviour
             ResetLoadPoint();
         }
     }
-
     private void ResetLoadPoint()
     {
         positionNextCargo = Vector3.zero;

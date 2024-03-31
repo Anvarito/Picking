@@ -1,19 +1,17 @@
-using System;
 using Infrastructure.Services.Input;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class MouseInputController : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler, IInputService
+public class MouseInputController : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
 {
-    
-    public UnityAction<PointerEventData> OnDragHandle { get;  set;}
-    public UnityAction<PointerEventData> OnEndDragHandle { get;  set;}
-    public UnityAction<PointerEventData> OnPointerDownHandle { get;  set;}
-    public UnityAction<PointerEventData> OnPointerUpHandle { get;  set;}
-    
     private bool _isStartDrag = false;
     private PointerEventData _dragEventData;
+    private IInputService _inputService;
+
+    public void SetUp(IInputService inputService)
+    {
+        _inputService = inputService;
+    }
     
     public void OnDrag(PointerEventData eventData)
     {
@@ -38,7 +36,7 @@ public class MouseInputController : MonoBehaviour, IDragHandler, IEndDragHandler
         //print("OnPointerDOwen");
         if(eventData.pointerId == -2)
             return;
-        OnPointerDownHandle?.Invoke(eventData);
+        _inputService.OnPointerDownHandle?.Invoke(eventData);
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -46,13 +44,13 @@ public class MouseInputController : MonoBehaviour, IDragHandler, IEndDragHandler
       //  print("OnPointerUp");
         if(eventData.pointerId == -2)
             return;
-        OnPointerUpHandle?.Invoke(eventData);
+        _inputService.OnPointerUpHandle?.Invoke(eventData);
     }
 
     private void Update()
     {
         if(_isStartDrag)
-            OnDragHandle?.Invoke(_dragEventData);
+            _inputService.OnDragHandle?.Invoke(_dragEventData);
     }
 
     public void CleanUp()

@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Infrastructure.Constants;
 using Infrastructure.Services;
 using Infrastructure.Services.Assets;
 using Infrastructure.Services.Input;
 using Infrastructure.Services.StaticData.Level;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using Zenject;
 
 namespace Infrastructure.Factories
@@ -14,48 +17,57 @@ namespace Infrastructure.Factories
     {
         private readonly DiContainer _container;
         private IAssetLoader _assetLoader;
-        private readonly IStaticDataService _staticDataService;
 
         private Canvas _uiRoot;
+        private IInputService _inputService;
+        
+        private MouseInputController _mouseInputController;
+        private JoystickHandler _joystickHandler;
+        private ICurrentLevelConfig _currentLevelConfig;
+        private CounterUI _counter;
 
         public UIFactory(
-            DiContainer container, 
+            DiContainer container,
             IAssetLoader assetLoader,
-            IStaticDataService staticDataService 
+            ICurrentLevelConfig currentLevelConfig,
+            IInputService inputService
         )
         {
+            _currentLevelConfig = currentLevelConfig;
+            _inputService = inputService;
             _assetLoader = assetLoader;
             _container = container;
-            _staticDataService = staticDataService;
         }
 
-        public async UniTask WarmUp(LevelConfig pendingStageStaticData)
+        public async UniTask WarmUp()
         {
-            await _assetLoader.LoadAsset(AssetPaths.InputCanvas, null, OnLoadInputCanvas);
+            CreateInputCanvas();
             CreatePointsCanvas();
         }
-        private void OnLoadInputCanvas(GameObject inputCanvas)
-        {
-            GameObject canvasGameObject = Object.Instantiate(inputCanvas);
-            MouseInputController mouseInputController = canvasGameObject.GetComponentInChildren<MouseInputController>();
-            _container.Bind<IInputService>().FromInstance(mouseInputController).AsSingle().NonLazy();
 
-            GameObject joysticCanvas = Object.Instantiate(_assetLoader.Load(AssetPaths.JoystickCanvas));
-            JoystickHandler Joystick = joysticCanvas.GetComponentInChildren<JoystickHandler>();
-            Joystick.WarmUp(mouseInputController);
+        private void CreateInputCanvas()
+        {
+            _mouseInputController = Object.Instantiate(_assetLoader.Load(AssetPaths.InputCanvas))
+                .GetComponentInChildren<MouseInputController>();
+            _joystickHandler = Object.Instantiate(_assetLoader.Load(AssetPaths.JoystickCanvas))
+                .GetComponentInChildren<JoystickHandler>();
+
+            _mouseInputController.SetUp(_inputService);
+            _joystickHandler.SetUp(_inputService);
         }
 
         private void CreatePointsCanvas()
         {
             GameObject pointsCanvas = Object.Instantiate(_assetLoader.Load(AssetPaths.PointsCanvas));
-            CounterUI counter = pointsCanvas.GetComponentInChildren<CounterUI>();
+            _counter = pointsCanvas.GetComponentInChildren<CounterUI>();
             List<UnloadingArea> unloadingAreas = Object.FindObjectsOfType<UnloadingArea>().ToList();
-            counter.WarmUp(unloadingAreas);
+            _counter.WarmUp(unloadingAreas, _currentLevelConfig.CurrentLevelConfig.CargoGoal);
         }
 
         public void CleanUp()
         {
-            
+            Object.Destroy(_joystickHandler.gameObject);
+            _counter.CleanUp();
         }
     }
 }

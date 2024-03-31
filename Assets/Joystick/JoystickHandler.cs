@@ -1,4 +1,5 @@
-﻿using Infrastructure.Services.Input;
+﻿using System;
+using Infrastructure.Services.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -14,20 +15,26 @@ public class JoystickHandler : MonoBehaviour
 
     public bool IsVisible => _joystick is null ? false : _joystick.activeInHierarchy;
 
-    public void WarmUp(IInputService inputService)
+    public void SetUp(IInputService inputService)
     {
         _mouseInputController = inputService;
         _mouseInputController.OnDragHandle += OnDrag;
         _mouseInputController.OnEndDragHandle += OnEndDrag;
         _mouseInputController.OnPointerDownHandle += OnPointerDown;
         _mouseInputController.OnPointerUpHandle += OnPointerUp;
-    }
-  
-    public void Start()
-    {
+        
         _joystick = _joystickOutter.gameObject;
         Hide();
     }
+
+    private void OnDestroy()
+    {
+        _mouseInputController.OnDragHandle -= OnDrag;
+        _mouseInputController.OnEndDragHandle -= OnEndDrag;
+        _mouseInputController.OnPointerDownHandle -= OnPointerDown;
+        _mouseInputController.OnPointerUpHandle -= OnPointerUp;
+    }
+
 
     public virtual void OnDrag(PointerEventData eventData)
     {

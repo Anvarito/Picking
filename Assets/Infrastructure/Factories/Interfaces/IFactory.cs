@@ -5,7 +5,7 @@ namespace Infrastructure.Factories
 {
     public interface IFactory
     {
-        UniTask WarmUp(LevelConfig pendingStageStaticData);
+        UniTask WarmUp();
         void CleanUp();
 
     }

@@ -19,7 +19,7 @@ namespace Infrastructure.Services.PointGoal
         }
 
 
-        public void WarmUp(LevelConfig levelConfig)
+        public void Setup(LevelConfig levelConfig)
         {
             _levelConfig = levelConfig;
             _unloadingArea = Object.FindObjectOfType<UnloadingArea>();
@@ -35,6 +35,7 @@ namespace Infrastructure.Services.PointGoal
 
         public void CleanUp()
         {
+            points = 0;
             _unloadingArea.OnEncrease -= Encrease;
         }
 

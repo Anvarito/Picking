@@ -25,6 +25,7 @@ namespace Infrastructure.States
             _states = new Dictionary<Type, IExitableState>
             {
                 [typeof(BootstrapState)]    = _stateFactory.CreateState<BootstrapState>(),
+                [typeof(MenuState)]    = _stateFactory.CreateState<MenuState>(),
                 //[typeof(LoadProgressState)] = _stateFactory.CreateState<LoadProgressState>(),
                 [typeof(LoadLevelState)]    = _stateFactory.CreateState<LoadLevelState>(),
                 [typeof(GameLoopState)]     = _stateFactory.CreateState<GameLoopState>(),

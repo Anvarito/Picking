@@ -16,5 +16,5 @@ MonoBehaviour:
     SceneName: Level1
     InGameName: Level 1
     GameTimer: 5
-    SpawnDelay: 0.3
+    SpawnDelay: 0.1
     CargoGoal: 20

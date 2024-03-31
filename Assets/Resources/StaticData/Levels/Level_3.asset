@@ -16,5 +16,5 @@ MonoBehaviour:
     SceneName: Level3
     InGameName: Level 3
     GameTimer: 5
-    SpawnDelay: 0.3
-    CargoGoal: 50
+    SpawnDelay: 0.1
+    CargoGoal: 60

@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Infrastructure.Constants;
 using Infrastructure.Factories.Interfaces;
+using Infrastructure.Services;
 using Infrastructure.Services.Assets;
 using Infrastructure.Services.StaticData.Level;
 using UnityEngine;
@@ -16,18 +18,17 @@ namespace Infrastructure.Factories
         private float _spawnDelay;
         private List<SpawnCargoArea> _spawnCargoAreas = new List<SpawnCargoArea>();
         private CancellationTokenSource _cancellationTokenSource;
-        private LevelConfig _levelConfig;
+        private ICurrentLevelConfig _currentLevelConfig;
 
-        public CargoFactory(IAssetLoader assetLoader)
+        public CargoFactory(IAssetLoader assetLoader, ICurrentLevelConfig currentLevelConfig)
         {
+            _currentLevelConfig = currentLevelConfig;
             _assetLoader = assetLoader;
-            _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public async UniTask WarmUp(LevelConfig pendingStageStaticData)
+        public async UniTask WarmUp()
         {
-            await UniTask.Yield();
-            _levelConfig = pendingStageStaticData;
+            _cancellationTokenSource = new CancellationTokenSource();
             _spawnCargoAreas = Object.FindObjectsOfType<SpawnCargoArea>().ToList();
             _cargoPrefab = await _assetLoader.LoadAsset<Cargo>(AssetPaths.Cargo);
         }
@@ -36,7 +37,7 @@ namespace Infrastructure.Factories
         {
             foreach (var area in _spawnCargoAreas)
             {
-                await UniTask.WaitForSeconds(_levelConfig.SpawnDelay,false,PlayerLoopTiming.Update, _cancellationTokenSource.Token);
+                await UniTask.WaitForSeconds(_currentLevelConfig.CurrentLevelConfig.SpawnDelay,false,PlayerLoopTiming.Update, _cancellationTokenSource.Token);
                 var cargo = Object.Instantiate(_cargoPrefab, area.transform);
                 cargo.transform.position = area.GetSpawnPoint();
                 cargo.transform.rotation = Quaternion.Euler(0, Random.rotation.eulerAngles.y, 0);

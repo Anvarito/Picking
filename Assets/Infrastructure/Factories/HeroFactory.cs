@@ -1,64 +1,67 @@
-﻿using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
+using Infrastructure.Constants;
 using Infrastructure.Services;
 using Infrastructure.Services.Assets;
-using Infrastructure.Services.StaticData.Level;
-using JetBrains.Annotations;
+using Infrastructure.Services.Input;
 using UnityEngine;
-using Zenject;
 
 
 namespace Infrastructure.Factories
 {
     public class HeroFactory : IHeroFactory
     {
-        private readonly DiContainer _container;
         private readonly IAssetLoader _assetProvider;
         private readonly IStaticDataService _staticDataService;
         
-        [CanBeNull] public GameObject Hero { get; private set; }
-        
-        public HeroFactory(DiContainer container, IAssetLoader assetLoader, IStaticDataService staticDataService)
+        private IPlayerView _playerView;
+        private PlayerDataModel _playerDataModel;
+        private PlayerContoller _playerContoller;
+
+        private PlayerView _playerViewPrefab;
+        private CameraMover _cameraMover;
+        private IInputService _inputService;
+        public GameObject Hero { get; }
+
+        public HeroFactory(IAssetLoader assetLoader, IStaticDataService staticDataService, IInputService inputService)
         {
-            _container = container;
+            _inputService = inputService;
             _assetProvider = assetLoader;
             _staticDataService = staticDataService;
         }
 
-        public async UniTask WarmUp(LevelConfig pendingStageStaticData)
+        public async UniTask WarmUp()
         {
-            var playerView = InstantiatePlayer();
-            InstantiateCamera(playerView);
+            if (_playerViewPrefab == null)
+                _playerViewPrefab = await _assetProvider.LoadAsset<PlayerView>(AssetPaths.Player);
+            
+            InstantiatePlayer();
+            InstantiateCamera();
         }
 
-        private PlayerView InstantiatePlayer()
+        private void InstantiatePlayer()
         {
-            PlayerView playerView = _assetProvider.LoadAndInstantiate<PlayerView>(AssetPaths.Player);
+            _playerView = Object.Instantiate(_playerViewPrefab);
             Transform spawnPoint = Object.FindObjectOfType<PlayerSpawnPoint>().transform;
-            playerView.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-            _container.Bind<IPlayerView>().FromInstance(playerView);
+            _playerView.Transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
-            PlayerDataModel playerDataModel =
-                new PlayerDataModel(_staticDataService.ForPlayer.Speed, _staticDataService.ForPlayer.AngularSpeed);
-            _container.Bind<IPlayerDataModel>().To<PlayerDataModel>().FromInstance(playerDataModel);
-            
-            PlayerContoller playerContoller = new PlayerContoller();
-            _container.Inject(playerContoller);
-            
-            return playerView;
+            _playerDataModel = new PlayerDataModel(_staticDataService.ForPlayer.Speed,
+                _staticDataService.ForPlayer.AngularSpeed);
+
+            _playerContoller = new PlayerContoller(_playerView, _playerDataModel, _inputService);
         }
 
-        private void InstantiateCamera(PlayerView playerView)
+        private void InstantiateCamera()
         {
-            CameraMover cameraMover = _assetProvider.Instantiate<CameraMover>(AssetPaths.PlayerCamera);
-            cameraMover.WarmUp(playerView);
+            _cameraMover = _assetProvider.Instantiate<CameraMover>(AssetPaths.PlayerCamera);
+            _cameraMover.WarmUp(_playerView);
         }
 
         public void CleanUp()
         {
-            Hero = null;
+            _playerDataModel = null;
+            _playerContoller.Dispose();
+            _playerContoller = null;
         }
 
-        
     }
 }

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Infrastructure.Services;
 using Infrastructure.Services.Assets;
-using Infrastructure.Services.StaticData.Level;
-using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
-using Object = UnityEngine.Object;
 
 namespace Infrastructure.Factories
 {
@@ -35,7 +29,7 @@ namespace Infrastructure.Factories
         }
 
 
-        public async UniTask WarmUp(LevelConfig pendingStageStaticData)
+        public async UniTask WarmUp()
         {
             //_assetLoader.LoadAndInstantiateAsync(EnemyPrefab, null, Create);
         }

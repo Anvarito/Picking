@@ -1,12 +1,8 @@
-﻿using System.Threading.Tasks;
-using UnityEngine;
-using Data;
-using Infrastructure.Factories;
+﻿using Infrastructure.Factories;
 using Infrastructure.Factories.Interfaces;
 using Infrastructure.SceneManagement;
 using Infrastructure.Services.PointGoal;
 using Infrastructure.Services.StaticData.Level;
-using Zenject;
 
 namespace Infrastructure.States
 {
@@ -42,7 +38,7 @@ namespace Infrastructure.States
         {
             _pendingStageStaticData = stageStaticData;
             //_stageProgressData = new StageProgressData();
-            await _sceneLoader.Load(SceneNameConstants.SceneName, OnLoaded);
+            await _sceneLoader.Load(stageStaticData.SceneName, OnLoaded);
         }
 
         public void Exit()
@@ -52,55 +48,11 @@ namespace Infrastructure.States
 
         private async void OnLoaded()
         {
-            InitPointGoal();
-            await InitCargo();
-            await InitUI();
-            await InitHero();
+            _pointGoalService.Setup(_pendingStageStaticData);
+            await _cargoFactory.WarmUp();
+            await _uiFactory.WarmUp();
+            await _heroFactory.WarmUp();
             _stateMachine.Enter<GameLoopState>();
         }
-
-        private void InitPointGoal()
-        {
-            _pointGoalService.WarmUp(_pendingStageStaticData);
-        }
-
-        private async Task InitCargo()
-        {
-            await _cargoFactory.WarmUp(_pendingStageStaticData);
-        }
-
-        private async Task InitHero()
-        {
-            await _heroFactory.WarmUp(_pendingStageStaticData);
-        }
-        private async Task InitUI()
-        {
-            await _uiFactory.WarmUp(_pendingStageStaticData);
-            // await _uiFactory
-            //     .CreateHud()
-            //     .ContinueWith(
-            //         m => m.Result.Initialize(_pendingStageStaticData, _stageProgressData),
-            //         TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        // private async Task SetupBoard() => 
-        //     await _stageFactory.CreateBoard(_pendingStageStaticData.BoardTiles);
-
-        // private async Task<GameObject> SetupHero() => 
-        //     await _heroFactory.Create(_pendingStageStaticData.PlayerSpawnPoint);
-        //
-        // private void SetupCamera(GameObject hero)
-        // {
-        //     //set up camera follow
-        // }
-        //
-        // private async Task SetupEnemySpawners()
-        // {
-        //     foreach (var spawnerData in _pendingStageStaticData.EnemySpawners)
-        //     {
-        //         var spawner = await _stageFactory.CreateEnemySpawner(spawnerData.EnemyType, spawnerData.Position);
-        //         _stageProgressData.EnemySpawners.Add(spawner);
-        //     }
-        // }
     }
 }

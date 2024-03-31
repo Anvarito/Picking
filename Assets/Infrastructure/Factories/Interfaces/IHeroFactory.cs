@@ -6,6 +6,5 @@ namespace Infrastructure.Factories
 {
     public interface IHeroFactory : IFactory
     {
-        GameObject Hero { get; }
     }
 }

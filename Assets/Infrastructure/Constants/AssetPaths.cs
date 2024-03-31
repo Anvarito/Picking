@@ -1,4 +1,4 @@
-namespace Infrastructure.Services.Assets
+namespace Infrastructure.Constants
 {
     public class AssetPaths
     {
@@ -10,6 +10,7 @@ namespace Infrastructure.Services.Assets
         public const string PointsCanvas = "General/UI/PointsCanvas";
         public const string InputCanvas = "General/UI/InputCanvas";
         public const string JoystickCanvas = "General/UI/Joystick";
+        public const string VictoryCanvas = "General/UI/VictoryCanvas";
         
         //Static data
         public const string LevelDataPath = "StaticData/Levels";

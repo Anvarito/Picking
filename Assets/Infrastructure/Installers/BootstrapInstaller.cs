@@ -26,7 +26,7 @@ namespace Infrastructure.Installers
         {
             Container.Bind<ILoggingService>().To<LoggingService>().AsSingle().NonLazy();
             Container.Bind<IAssetLoader>().To<AssetLoader>().AsSingle().NonLazy();
-            //Container.Bind<IInputService>().To<InputService>().AsSingle().NonLazy();
+            Container.Bind<IInputService>().To<InputService>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<StaticDataService>().AsSingle().NonLazy(); // remote, initializable
             Container.BindInterfacesAndSelfTo<PersistentDataService>().AsSingle().NonLazy(); // possible remote, initializable
             Container.BindInterfacesAndSelfTo<PointGoalService>().AsSingle().NonLazy(); // possible remote, initializable

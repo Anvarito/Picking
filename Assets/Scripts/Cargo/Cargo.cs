@@ -8,7 +8,8 @@ public class Cargo : MonoBehaviour
     public Vector3 Size { get; private set; }
 
     private Collider _collider;
-
+    private Tween _moveTween;
+    private Tween _rotateTween;
     private void Awake()
     {
         _collider = GetComponent<Collider>();
@@ -36,17 +37,21 @@ public class Cargo : MonoBehaviour
     private void MoveTo(Vector3 end, UnityAction onComplete)
     {
         _collider.enabled = false;
-        transform.DOLocalMove(end, 0.2f).SetEase(Ease.Linear).onComplete = () => 
-            { 
-                _collider.enabled = true; 
-                onComplete?.Invoke(); 
-            };
+        _moveTween = transform.DOLocalMove(end, 0.2f).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            _collider.enabled = true;
+            onComplete?.Invoke();
+        });
     }
 
     private void RotateTo(Vector3 end)
     {
-        transform.DOLocalRotate(Vector3.zero, 0.2f).SetEase(Ease.Linear);
+        _rotateTween = transform.DOLocalRotate(Vector3.zero, 0.2f).SetEase(Ease.Linear);
     }
 
-    
+    private void OnDestroy()
+    {
+        _moveTween.Kill();
+        _rotateTween.Kill();
+    }
 }

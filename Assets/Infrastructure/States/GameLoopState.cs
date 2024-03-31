@@ -14,6 +14,8 @@ namespace Infrastructure.States
         private ICargoFactory _cargoFactory;
 
         private IPointGoalService _pointGoalService;
+
+        private IUIFactory _uiFactory;
         //private readonly ILevelProgressService _levelProgressService;
 
         public GameLoopState(
@@ -21,10 +23,12 @@ namespace Infrastructure.States
             IHeroFactory heroFactory, 
             IEnemyFactory enemyFactory,
             ICargoFactory cargoFactory,
-            IPointGoalService pointGoalService
+            IPointGoalService pointGoalService,
+            IUIFactory uiFactory
             //ILevelProgressService levelProgressService)
             )
         {
+            _uiFactory = uiFactory;
             _pointGoalService = pointGoalService;
             _cargoFactory = cargoFactory;
             _stateMachine = gameStateMachine;
@@ -50,9 +54,11 @@ namespace Infrastructure.States
         {
             // release enemies' assets there instead on exit from LLS coz they can respawn by timer
             _pointGoalService.OnPointsGoal -= PointGoal;
+            _pointGoalService.CleanUp();
             _cargoFactory.CleanUp();
             _enemyFactory.CleanUp();
             _heroFactory.CleanUp();
+            _uiFactory.CleanUp();
         }
     }
 }
