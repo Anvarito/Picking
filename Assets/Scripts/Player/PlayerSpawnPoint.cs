@@ -1,18 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Infrastructure.States;
 using UnityEngine;
+using Zenject;
 
 public class PlayerSpawnPoint : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Place(IPlayerView playerView)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        playerView.Transform.SetPositionAndRotation(transform.position, transform.rotation);
     }
 }

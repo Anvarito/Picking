@@ -1,8 +1,10 @@
 using Infrastructure.Services.Input;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
-public class PlayerContoller
+public class PlayerContoller 
 {
     private IPlayerDataModel _playerDataModel;
     private IPlayerView _playerView;
@@ -81,4 +83,6 @@ public class PlayerContoller
 
         _playerView.SetAnimationSpeed(_normalizedMagnitude);
     }
+
+    
 }

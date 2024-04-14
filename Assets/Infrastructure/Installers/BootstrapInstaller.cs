@@ -1,5 +1,6 @@
 using Infrastructure.Factories;
 using Infrastructure.Factories.Interfaces;
+using Infrastructure.Factories.StateFactories;
 using Infrastructure.SceneManagement;
 using Infrastructure.Services.Assets;
 using Infrastructure.Services.Input;
@@ -16,29 +17,21 @@ namespace Infrastructure.Installers
     {
         public override void InstallBindings()
         {
-            Container.Bind<SceneLoader>().AsSingle();
-            
+            BindSceneLoader();
             BindServices();
-            BindFactories();
         }
+
+        private void BindSceneLoader()=>
+            Container.Bind<SceneLoader>().AsSingle();
 
         private void BindServices()
         {
             Container.Bind<ILoggingService>().To<LoggingService>().AsSingle().NonLazy();
             Container.Bind<IAssetLoader>().To<AssetLoader>().AsSingle().NonLazy();
             Container.Bind<IInputService>().To<InputService>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<StaticDataService>().AsSingle().NonLazy(); // remote, initializable
-            Container.BindInterfacesAndSelfTo<PersistentDataService>().AsSingle().NonLazy(); // possible remote, initializable
-            Container.BindInterfacesAndSelfTo<PointGoalService>().AsSingle().NonLazy(); // possible remote, initializable
-        }
-
-        private void BindFactories()
-        {
-            Container.BindInterfacesAndSelfTo<StateFactory>().AsSingle();
-            Container.Bind<IHeroFactory>().To<HeroFactory>().AsSingle();
-            Container.Bind<IEnemyFactory>().To<EnemyFactory>().AsSingle();
-            Container.Bind<IUIFactory>().To<UIFactory>().AsSingle();
-            Container.Bind<ICargoFactory>().To<CargoFactory>().AsSingle();
+            Container.BindInterfacesAndSelfTo<StaticDataService>().AsSingle().NonLazy(); 
+            Container.BindInterfacesAndSelfTo<PersistentDataService>().AsSingle().NonLazy(); 
+            
         }
     }
 }

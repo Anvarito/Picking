@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class PlayerDataModel : IPlayerDataModel
 {
     public PlayerDataModel(float speed, float angularSpeed)

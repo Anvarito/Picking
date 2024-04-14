@@ -5,10 +5,7 @@ using Infrastructure.Constants;
 using Infrastructure.Services;
 using Infrastructure.Services.Assets;
 using Infrastructure.Services.Input;
-using Infrastructure.Services.StaticData.Level;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 using Zenject;
 
 namespace Infrastructure.Factories
@@ -16,25 +13,22 @@ namespace Infrastructure.Factories
     public class UIFactory : IUIFactory
     {
         private readonly DiContainer _container;
-        private IAssetLoader _assetLoader;
-
-        private Canvas _uiRoot;
-        private IInputService _inputService;
-        
+        private readonly IAssetLoader _assetLoader;
+        private readonly ICurrentLevelConfig _currentLevelConfig;
+        private MouseInputController.Factory _mouseInputControllerFactory;
         private MouseInputController _mouseInputController;
+        
+        private JoystickHandler.Factory _joystickHandlerFactory;
         private JoystickHandler _joystickHandler;
-        private ICurrentLevelConfig _currentLevelConfig;
         private CounterUI _counter;
 
         public UIFactory(
             DiContainer container,
             IAssetLoader assetLoader,
-            ICurrentLevelConfig currentLevelConfig,
-            IInputService inputService
+            ICurrentLevelConfig currentLevelConfig
         )
         {
             _currentLevelConfig = currentLevelConfig;
-            _inputService = inputService;
             _assetLoader = assetLoader;
             _container = container;
         }
@@ -47,13 +41,13 @@ namespace Infrastructure.Factories
 
         private void CreateInputCanvas()
         {
-            _mouseInputController = Object.Instantiate(_assetLoader.Load(AssetPaths.InputCanvas))
-                .GetComponentInChildren<MouseInputController>();
-            _joystickHandler = Object.Instantiate(_assetLoader.Load(AssetPaths.JoystickCanvas))
-                .GetComponentInChildren<JoystickHandler>();
-
-            _mouseInputController.SetUp(_inputService);
-            _joystickHandler.SetUp(_inputService);
+            _container.BindFactory<MouseInputController, MouseInputController.Factory>().FromComponentInNewPrefab(_assetLoader.Load(AssetPaths.InputCanvas));
+            _mouseInputControllerFactory = _container.Resolve<MouseInputController.Factory>();
+            _mouseInputController = _mouseInputControllerFactory.Create();
+            
+            _container.BindFactory<JoystickHandler, JoystickHandler.Factory>().FromComponentInNewPrefab(_assetLoader.Load(AssetPaths.JoystickCanvas));
+            _joystickHandlerFactory = _container.Resolve<JoystickHandler.Factory>();
+            _joystickHandler = _joystickHandlerFactory.Create();
         }
 
         private void CreatePointsCanvas()
@@ -67,6 +61,7 @@ namespace Infrastructure.Factories
         public void CleanUp()
         {
             Object.Destroy(_joystickHandler.gameObject);
+            Object.Destroy(_mouseInputController.gameObject);
             _counter.CleanUp();
         }
     }

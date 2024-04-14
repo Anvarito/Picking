@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Zenject;
 
 public class PlayerView : MonoBehaviour, IPlayerView
 {

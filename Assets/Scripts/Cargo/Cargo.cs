@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
+using Zenject;
 
 public class Cargo : MonoBehaviour
 {
@@ -53,5 +54,10 @@ public class Cargo : MonoBehaviour
     {
         _moveTween.Kill();
         _rotateTween.Kill();
+    }
+    
+    public class Factory : PlaceholderFactory<Cargo>
+    {
+        
     }
 }

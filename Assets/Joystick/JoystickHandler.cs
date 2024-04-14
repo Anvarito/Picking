@@ -3,6 +3,7 @@ using Infrastructure.Services.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 public class JoystickHandler : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class JoystickHandler : MonoBehaviour
 
     public bool IsVisible => _joystick is null ? false : _joystick.activeInHierarchy;
 
+    [Inject]
     public void SetUp(IInputService inputService)
     {
         _mouseInputController = inputService;
@@ -26,7 +28,10 @@ public class JoystickHandler : MonoBehaviour
         _joystick = _joystickOutter.gameObject;
         Hide();
     }
-
+    public class Factory : PlaceholderFactory<JoystickHandler>
+    {
+        
+    }
     private void OnDestroy()
     {
         _mouseInputController.OnDragHandle -= OnDrag;

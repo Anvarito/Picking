@@ -1,15 +1,13 @@
-using Zenject;
 using Infrastructure.States;
+using Zenject;
 
-namespace Infrastructure.Factories
+namespace Infrastructure.Factories.StateFactories
 {
-    public class StateFactory
+    public abstract class StateFactory
     {
-        private readonly DiContainer _container;
-
+        protected readonly DiContainer _container;
         public StateFactory(DiContainer container) =>
             _container = container;
-
         public T CreateState<T>() where T : IExitableState =>
             _container.Resolve<T>();
     }

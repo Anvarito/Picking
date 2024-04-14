@@ -13,15 +13,14 @@ namespace Infrastructure.Services.PointGoal
         private UnloadingArea _unloadingArea;
         private int points = 0;
         
-        public PointGoalService()
+        public PointGoalService(ICurrentLevelConfig levelConfig)
         {
-            
+            _levelConfig = levelConfig.CurrentLevelConfig;
         }
 
 
-        public void Setup(LevelConfig levelConfig)
+        public void WarmUp()
         {
-            _levelConfig = levelConfig;
             _unloadingArea = Object.FindObjectOfType<UnloadingArea>();
             _unloadingArea.OnEncrease += Encrease;
         }

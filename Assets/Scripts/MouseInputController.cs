@@ -1,6 +1,7 @@
 using Infrastructure.Services.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 public class MouseInputController : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
 {
@@ -8,6 +9,7 @@ public class MouseInputController : MonoBehaviour, IDragHandler, IEndDragHandler
     private PointerEventData _dragEventData;
     private IInputService _inputService;
 
+    [Inject]
     public void SetUp(IInputService inputService)
     {
         _inputService = inputService;
@@ -53,9 +55,8 @@ public class MouseInputController : MonoBehaviour, IDragHandler, IEndDragHandler
             _inputService.OnDragHandle?.Invoke(_dragEventData);
     }
 
-    public void CleanUp()
+    public class Factory : PlaceholderFactory<MouseInputController>
     {
         
     }
-
 }

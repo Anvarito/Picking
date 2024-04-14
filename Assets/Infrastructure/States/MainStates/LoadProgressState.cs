@@ -1,18 +1,15 @@
-﻿using System.Collections.Generic;
-using Data;
-
-namespace Infrastructure.States
+﻿namespace Infrastructure.States.MainStates
 {
     /*
     public class LoadProgressState : IState
     {
-        private readonly GameStateMachine _stateMachine;
+        private readonly MainStateMachine _stateMachine;
         private readonly IPersistentDataService _progressService;
         private readonly ISaveLoadService _saveLoadProgressService;
         private readonly IEconomyService _economyService;
 
         public LoadProgressState(
-            GameStateMachine gameStateMachine, 
+            MainStateMachine gameStateMachine, 
             IPersistentDataService progressService,
             ISaveLoadService saveLoadProgressService,
             IEconomyService economyService)
@@ -29,7 +26,7 @@ namespace Infrastructure.States
             InitEconomyByProgress();
 
             //_stateMachine.Enter<LoadMetaState>();
-            _stateMachine.Enter<LoadLevelState>();
+            _stateMachine.Enter<GameState>();
         }
 
         public void Exit()

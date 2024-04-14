@@ -6,6 +6,6 @@ namespace Infrastructure.Services.PointGoal
     public interface IPointGoalService : IService
     {
         public UnityAction OnPointsGoal { get; set; }
-        void Setup(LevelConfig levelConfig);
+        public void WarmUp();
     }
 }
